@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+   
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Visual Spatial tz">
+    <meta name="author" content="ramaali:gis technician">
+    <title>Crime Analysis</title>
+    <style>     
+      body {
+      	margin: 0;
+      	padding: 0;
+      }
+        
+      html, body, #map {
+    height: 100%;
+    width: 100%;
+}
+    
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <link rel="stylesheet" href="http://humangeo.github.com/leaflet-dvf/dist/css/dvf.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="leaflet-search_2.css" type="text/css" media="screen" />
+</head>
+
+<body>
+   
+	
+
+
+<div id="map"></div>
+	
+	
+	<script type="text/javascript" src="lib/crime-data.js"></script>
+	<script type="text/javascript" src="lib/crime-data2.js"></script>
+	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="lib/leaflet-dvf.js"></script>
+	<script type="text/javascript" src="lib/javascript.util.js"></script>
+	<script type="text/javascript" src="lib/jsts.js"></script>
+	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+	<script type="text/javascript" src="leaflet-search_1.js"></script>
+	<script type="text/javascript">
+		
+		var map = L.map('map').setView([-6.8, 39.283333],6);
+
+		var resize = function () { 
+			var $map = $('#map');
+		
+			$map.height($(window).height());
+		
+			if (map) {
+				map.invalidateSize();
+			}
+		};
+	
+		$(window).on('resize', function () {
+			resize();
+		});
+	
+		resize();
+	
+		var baseLayer1 = new L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.jpg80?access_token=pk.eyJ1IjoicmFtYWFsaSIsImEiOiJjazJvajA1eGIxMHNpM29xdWw2OXppbDJyIn0.J1voCRsfq5g3o578e5eCFg', {
+			attribution: 'Visual Spatial tz'
+		});
+	
+		baseLayer1.addTo(map);
+        
+        var baseLayer2 = new L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.jpg80?access_token=pk.eyJ1IjoicmFtYWFsaSIsImEiOiJjazJvajA1eGIxMHNpM29xdWw2OXppbDJyIn0.J1voCRsfq5g3o578e5eCFg',{attribution: 'Visual Spatial tz',
+    maxZoom: 28,
+   
+     }).addTo(map);
+        
+        var baseLayer3 = new L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.jpg80?access_token=pk.eyJ1IjoicmFtYWFsaSIsImEiOiJjazJvajA1eGIxMHNpM29xdWw2OXppbDJyIn0.J1voCRsfq5g3o578e5eCFg', {
+        attribution: 'Visual Spatial tz',
+        maxZoom: 28,
+      
+    }).addTo(map);
+		
+		var layerControl = new L.Control.Layers({
+			'Layer1': baseLayer1,
+            'Layer2': baseLayer2,
+            'Layer3': baseLayer3
+		});
+		
+		layerControl.addTo(map);
+		
+		var legendControl = new L.Control.Legend({
+            
+
+        });
+		
+		legendControl.addTo(map);
+		
+		var options = {
+			locationMode: L.LocationModes.LOOKUP,
+			recordsField: null,
+			codeField: 'code',
+			locationLookup: data, // A GeoJSON FeatureCollection that will be used to lookup boundaries/location
+			locationTextField: 'code',
+			includeBoundary: true, // Whether or not to include a background boundary so people know what boundary each marker is associated with
+			layerOptions: {
+				fillOpacity: 0.9,
+				opacity: 1,
+				weight: 1
+			},
+			displayOptions: {
+				Rape_2016: {
+					displayName: 'Tanzania Rape analysis',
+					fillColor: new L.HSLSaturationFunction(new L.Point(50, 0), new L.Point(500, 1), {
+						outputHue: 240
+					}),
+					color: new L.HSLSaturationFunction(new L.Point(50, 0), new L.Point(500, 1	), {
+						outputHue: 240,
+						outputLuminosity: '35%'
+					})
+				}
+			},
+             tooltipOptions: {
+            iconSize: new L.Point(100, 80),
+            iconAnchor: new L.Point(-5, 3)
+        },onEachRecord: function (layer, record, location) {
+			var $html = $(L.HTMLUtils.buildTable(Location));
+
+			layer.bindPopup($html.wrap('<div/>').parent().html(),{
+				minWidth: 250,
+                maxWidth:250,
+                maxHeight:200
+			});
+		}
+            //onEachRecord: function (layer, record) {
+            //layer.bindPopup($(L.HTMLUtils.buildTable(record)).wrap('<div/>').parent().html());
+       // }
+
+		};
+		
+		var nlPopLayerChoropleth = new L.ChoroplethDataLayer(data2, options);
+		layerControl.addOverlay(nlPopLayerChoropleth, 'Tanzania-map');
+		
+		var symbolOptions = $.extend(true, {}, options, {
+			layerOptions: {
+				numberOfSides: 50,
+				fillOpacity: 1.0,
+				gradient: true
+			},
+			displayOptions: {
+				Rape_2016: {
+					displayName: 'Tanzania Rape analysis',
+					fillColor: new L.HSLLuminosityFunction(new L.Point(50, 1), new L.Point(500, 0.5), {
+						outputHue: 0
+					}),
+					color: new L.HSLLuminosityFunction(new L.Point(50, 0.7), new L.Point(500, 0.2), {
+						outputHue: 0
+					}),
+					radius: new L.LinearFunction([50, 15],[500, 25]),
+					innerRadius: new L.LinearFunction([50, 5],[500, 15])
+				}
+			},
+			getIndexKey: function (location, record) {
+				return location.text;
+			},
+             tooltipOptions: {
+            iconSize: new L.Point(100, 80),
+            iconAnchor: new L.Point(-5, 3)
+        },
+            onEachRecord: function (layer, record) {
+            layer.bindPopup($(L.HTMLUtils.buildTable(record)).wrap('<div/>').parent().html());
+        }
+
+		});
+		
+		var nlPopLayerSymbol = new L.DataLayer(data2, symbolOptions);
+		
+		// Added for index key testing - should change layer styling after 5 seconds
+		setTimeout(function () {
+			var func = new L.HSLHueFunction(new L.Point(50, 200), new L.Point(500, 330));
+			nlPopLayerSymbol.setDisplayOption('Rape_2016', {
+				fillColor:func, 
+				color: func
+			});
+		}, 5000);
+        
+        
+        //search
+      /*  var searchControl = new L.Control.Search({
+		layer: data,
+		propertyName: 'Region_Nam',
+       
+		marker: false,
+		moveToLocation: function(latlng,title, map) {
+			map.fitBounds( latlng.layer.getBounds() );
+			 // access the zoom
+		}
+	});
+
+	searchControl.on('search:locationfound', function(e) {
+
+		//console.log('search:locationfound', );
+
+		//map.removeLayer(this._markerSearch)
+
+		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
+		if(e.layer._popup)
+			e.layer.openPopup();
+
+	}).on('search:collapsed', function(e) {
+
+		data.eachLayer(function(layer) {	//restore feature color
+			data.resetStyle(layer);
+		});	
+	});
+
+	map.addControl( searchControl );  //inizialize search control */
+
+		
+		map.addLayer(nlPopLayerSymbol);
+		layerControl.addOverlay(nlPopLayerSymbol, 'Tanzania Rape Analysis-2016');
+
+	</script>
+</body>
+</html>
