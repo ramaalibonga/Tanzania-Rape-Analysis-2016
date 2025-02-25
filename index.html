@@ -3,53 +3,75 @@
 <head>
     <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="Visual Spatial tz">
-    <meta name="author" content="ramaali:gis technician">
-    <title>Crime Analysis</title>
+    <title>Tanzania Rape  Analysis 2016</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
     <link rel="stylesheet" href="http://humangeo.github.com/leaflet-dvf/dist/css/dvf.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="lib/crime-data.js"></script>
-	<script type="text/javascript" src="lib/crime-data2.js"></script>
-	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
 	<script type="text/javascript" src="lib/leaflet-dvf.js"></script>
 	<script type="text/javascript" src="lib/javascript.util.js"></script>
 	<script type="text/javascript" src="lib/jsts.js"></script>
-	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
-	<script type="text/javascript" src="leaflet-search_1.js"></script>
-    <style>     
-      body {
+	<script type="text/javascript" src="lib/data/tanzaniaRegions.js"></script>
+	<script type="text/javascript" src="lib/data/tanzaniaRapes2016.js"></script>
+    <style>   
+
+h1,h2,h3,h4,h5,p{
+	    font-family: "Roboto", serif;
+        font-weight: 400;
+        font-style: normal;
+}
+
+body {
       	margin: 0;
       	padding: 0;
+	
       }
+
+	  .bg-primary1{
+	background-color: #90D6FF;
+}
         
-      html, body, #map {
+ #map {
     height: 100%;
     width: 100%;
 }
-    
-    </style>
-</head>
 
+.navbg-color{
+	background-color:#FF0000 ;
+}
+
+.legend {
+    line-height: 20px;
+    color: #bea4a4;
+    background-color: white;
+}
+.legend i {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+    
+</style>
+</head>
 <body>
-	<div class="container-fluid">
-		<nav class="navbar navbar-expand-sm bg-primary">
-			<h3 class="text-white p-1">Tanzania Rape Status in Regions - 2016 </h3>
-		</nav>
-	</div>
-<div id="map"></div>		
+<nav class="navbar navbar-expand-sm ">
+<h4 class="text-dark p-1">Tanzania Regions Rape Analysis - 2016 </h4>
+</nav>
+<div class="container-fluid">
+<div id="map"></div>	
+</div>	
 </body>
 <script>
 	//initialize map
-	var map = L.map('map').setView([-6.8, 39.283333],6);
-
-
+	var map = L.map('map').setView([-6.8, 39.283333],10);
 	//resize map
 	var resize = function () { 
 		var $map = $('#map');
 	
-		$map.height($(window).height());
+		$map.height($(window).height() - $('div.navbar').outerHeight());
 	
 		if (map) {
 			map.invalidateSize();
@@ -62,32 +84,22 @@
 
 	resize();
 
-	//map tiles
+//map tiles
  //street tile layer 
  var streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 10,
     attribution: ''
 }).addTo(map);  
 
-// //satellite tile layer
-// var satelliteMap = L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg80?access_token=pk.eyJ1IjoicmFtYWFsaSIsImEiOiJjazJvajA1eGIxMHNpM29xdWw2OXppbDJyIn0.J1voCRsfq5g3o578e5eCFg', {
-// attribution: '',
-// maxZoom: 10,
-// }).addTo(map);
-
 //add map layer control
-	
-	var layerControl = new L.Control.Layers({
+var layerControl = new L.Control.Layers({
 		'Street Map': streetMap,
-		//'Satellite Map':satelliteMap 
 	});
 	
 	layerControl.addTo(map);
 	
-	var legendControl = new L.Control.Legend({
-		
-
-	});
+//add legend layer
+var legendControl = new L.Control.Legend();
 	
 	legendControl.addTo(map);
 	
@@ -95,7 +107,7 @@
 		locationMode: L.LocationModes.LOOKUP,
 		recordsField: null,
 		codeField: 'code',
-		locationLookup: data, // A GeoJSON FeatureCollection that will be used to lookup boundaries/location
+		locationLookup: regions, // A GeoJSON FeatureCollection that will be used to lookup boundaries/location
 		locationTextField: 'code',
 		includeBoundary: true, // Whether or not to include a background boundary so people know what boundary each marker is associated with
 		layerOptions: {
@@ -120,7 +132,6 @@
 		iconAnchor: new L.Point(-5, 3)
 	},
 	onEachRecord: function (layer, record, location) {
-		//console.log("location:"+location);
 		var $html = $(L.HTMLUtils.buildTable(record));
 
 		layer.bindPopup($html.wrap('<div/>').parent().html(),{
@@ -132,8 +143,8 @@
 	
 	};
 	
-	var nlPopLayerChoropleth = new L.ChoroplethDataLayer(data2, options);
-	layerControl.addOverlay(nlPopLayerChoropleth, 'Tanzania-map');
+	var nlPopLayerChoropleth = new L.ChoroplethDataLayer(rapes2016, options);
+	layerControl.addOverlay(nlPopLayerChoropleth, 'Tanzania Rape Analysis by Regions');
 
 	
 	var symbolOptions = $.extend(true, {}, options, {
@@ -144,7 +155,7 @@
 		},
 		displayOptions: {
 			Rape_2016: {
-				displayName: 'Tanzania Rape analysis',
+				displayName: 'Tanzania Rape analysis by Size',
 				fillColor: new L.HSLLuminosityFunction(new L.Point(50, 1), new L.Point(500, 0.5), {
 					outputHue: 0
 				}),
@@ -168,8 +179,7 @@
 
 	});
 	
-	var nlPopLayerSymbol = new L.DataLayer(data2, symbolOptions);
-
+	var nlPopLayerSymbol = new L.DataLayer(rapes2016, symbolOptions);
 	map.addLayer(nlPopLayerSymbol);
 	layerControl.addOverlay(nlPopLayerSymbol, 'Tanzania Rape Analysis-2016');
 
