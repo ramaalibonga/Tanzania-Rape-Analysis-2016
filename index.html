@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Tanzania Rape  Analysis 2016</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+   <title>Tanzania Sexual Violence Data Analysis Report – 2016</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
     <link rel="stylesheet" href="http://humangeo.github.com/leaflet-dvf/dist/css/dvf.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -65,9 +65,9 @@ body {
 </div>	
 </body>
 <script>
-	//initialize map
+	//leaflet map initialization 
 	var map = L.map('map').setView([-6.8, 39.283333],10);
-	//resize map
+	//function used to resize map size
 	var resize = function () { 
 		var $map = $('#map');
 	
@@ -84,21 +84,20 @@ body {
 
 	resize();
 
-//map tiles
- //street tile layer 
+ // leaflet basemap layer
  var streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 10,
     attribution: ''
 }).addTo(map);  
 
-//add map layer control
+ // leaflet basemap layer control object
 var layerControl = new L.Control.Layers({
 		'Street Map': streetMap,
 	});
 	
 	layerControl.addTo(map);
 	
-//add legend layer
+//leaflet map legend control objectr
 var legendControl = new L.Control.Legend();
 	
 	legendControl.addTo(map);
@@ -142,7 +141,8 @@ var legendControl = new L.Control.Legend();
 	}
 	
 	};
-	
+
+	//leaflet choropletth map layer object
 	var nlPopLayerChoropleth = new L.ChoroplethDataLayer(rapes2016, options);
 	layerControl.addOverlay(nlPopLayerChoropleth, 'Tanzania Rape Analysis by Regions');
 
