@@ -2,22 +2,22 @@
 ## This project visualizes regional data on reported Sexual Violence cases in Tanzania for the year 2016 using an interactive web map.
 
 
-# 🚀 How to Run This Project Locally
-## Follow these steps to set up and run the project on your local machine:
+## 🚀 How to Run This Project Locally
+### Follow these steps to set up and run the project on your local machine:
 
- - 1. Clone the Repository
+## ✅  Clone the Repository
    ```
    git clone https://github.com/ramaalibonga/Tanzania-Rape-Analysis-2016.git
    ```
 
-- 2. Open the Web Map
-  # Open the index.html file in your preferred web browser:
+## ✅ Open the Web Map
+  ### Open the index.html file in your preferred web browser:
   ```
    index.html
   ```
 
 
-  #🛠️ Technologies Used
+ ## ✅ 🛠️ Technologies Used
  - Leaflet.js – Interactive mapping library
 
  - HTML – Markup language
